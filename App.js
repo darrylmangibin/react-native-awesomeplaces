@@ -14,15 +14,18 @@ class App extends React.Component {
     }
     this.setState((prevState) => {
       return {
-        places: prevState.places.concat(placeName)
+        places: prevState.places.concat({
+          key: Math.random().toString(),
+          name: placeName
+        })
       }
     })
   }
-  placeDeletedHandler = (index) => {
+  placeDeletedHandler = (key) => {
     this.setState((prevState) => {
       return {
         places: prevState.places.filter((place, i) => {
-          if(index !== i) {
+          if(place.key !== key) {
             return place
           }
         })
