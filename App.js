@@ -3,11 +3,12 @@ import { View, StyleSheet } from 'react-native';
 
 import PlaceInput from './src/components/PlaceInput/PlaceInput';
 import PlaceList from './src/components/PlaceList/PlaceList';
-import placeImage from './src/assets/beautiful-place.jpg';
+import PlaceDetail from './src/components/PlaceDetail/PlaceDetail';
 
 class App extends React.Component {
   state = {
-    places: []
+    places: [],
+    selectedPlace: null
   }
   placeSubmitHandler = (placeName) => {
     if (placeName === '') {
@@ -18,31 +19,58 @@ class App extends React.Component {
         places: prevState.places.concat({
           key: Math.random().toString(),
           name: placeName,
-          image: placeImage
+          image: {
+            uri: 'https://c1.staticflickr.com/5/4096/4744241983_34023bf303_b.jpg'
+          }
         })
       }
     })
   }
-  placeDeletedHandler = (key) => {
+  placeSelectedHandler = (key) => {
     this.setState((prevState) => {
       return {
-        places: prevState.places.filter((place, i) => {
-          if(place.key !== key) {
+        selectedPlace: prevState.places.find((place) => {
+          if(place.key === key) {
             return place
           }
         })
       }
     })
   }
+
+  placeDeletedHandler = () => {
+      this.setState((prevState) => {
+        return {
+          places: prevState.places.filter((place) => {
+            if(place.key !== prevState.selectedPlace.key) {
+              return place
+            }
+          }),
+          selectedPlace: null
+        }
+      })
+  }
+
+  modalClosedHandler = () => {
+    this.setState({
+      selectedPlace: null
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
+      <PlaceDetail 
+        selectedPlace={this.state.selectedPlace}
+        onItemDeleted={this.placeDeletedHandler}
+        onModalClosed={this.modalClosedHandler}
+      />
         <PlaceInput 
           addPlaceHandler={this.placeSubmitHandler}
         />
         <PlaceList 
           places={this.state.places}
-          onItemDeleted={this.placeDeletedHandler}
+          onItemSelected={this.placeSelectedHandler}
         />
       </View>
     )
