@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import ListItem from './src/components/ListItem/ListItem';
 import PlaceInput from './src/components/PlaceInput/PlaceInput';
@@ -18,20 +18,25 @@ class App extends React.Component {
 
     this.setState(prevState => {
       return {
-        places: prevState.places.concat(placeName),
+        places: prevState.places.concat({
+          key: Math.random().toString(),
+          name: placeName
+        }),
       }
     });
   }
 
-  render(){
-    const placesOutput = this.state.places.map((place, i) => {
-      return (
-        <ListItem 
-          key={i}
-          placeName={place}
-        />
-      )
+  placeDeletedHandler = (key) => {
+    this.setState(prevState => {
+      return {
+        places: prevState.places.filter((place) => {
+          return place.key !== key
+        })
+      }
     })
+  }
+
+  render(){
     return (
       <View style={styles.container}>
         <PlaceInput 
@@ -39,6 +44,7 @@ class App extends React.Component {
         />
         <PlaceList 
           places={this.state.places}
+          onItemDeleted={this.placeDeletedHandler}
         />
       </View>
     )

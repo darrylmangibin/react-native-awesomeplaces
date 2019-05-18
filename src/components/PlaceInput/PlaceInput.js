@@ -13,6 +13,11 @@ class PlaceInput extends React.Component {
      })
    }
 
+   addPlacehandler = (placeName) => {
+     this.props.addPlacehandler(placeName);
+     this.setState({ placeName: '' })
+   }
+
   render() {
     return (
       <View style={styles.inputContainer}>
@@ -23,7 +28,7 @@ class PlaceInput extends React.Component {
           style={styles.placeInput}
         />
         <Button
-          onPress={() => this.props.addPlacehandler(this.state.placeName)} 
+          onPress={() => this.addPlacehandler(this.state.placeName)} 
           style={styles.placeButton}
           title="Add"
         />
