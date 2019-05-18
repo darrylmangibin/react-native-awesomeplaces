@@ -1,44 +1,31 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { connect } from 'react-redux'
-
-import PlaceInput from './src/components/PlaceInput/PlaceInput';
-import PlaceList from './src/components/PlaceList/PlaceList';
-import PlaceDetail from './src/components/PlaceDetail/PlaceDetail';
-import { addPlace, deselectPlace, deletePlace, selectPlace } from './src/store/actions/index';
+import { View, Button, StyleSheet, TextInput } from 'react-native';
 
 class App extends React.Component {
-  placeSubmitHandler = (placeName) => {
-    this.props.onAddPlace(placeName)
-  }
-  placeSelectedHandler = (key) => {
-    this.props.onSelectPlace(key)
+
+  state = {
+    placeName: ''
   }
 
-  placeDeletedHandler = () => {
-    this.props.onDeletePlace()
+  placeNameChangedHandler = (event) => {
+    this.setState({ placeName: event })
   }
 
-  modalClosedHandler = () => {
-    this.props.onDeselectPlace()
-  }
-
-  render() {
-    console.log(this.props)
+  render(){
     return (
       <View style={styles.container}>
-      <PlaceDetail 
-        selectedPlace={this.props.selectedPlace}
-        onItemDeleted={this.placeDeletedHandler}
-        onModalClosed={this.modalClosedHandler}
-      />
-        <PlaceInput 
-          addPlaceHandler={this.placeSubmitHandler}
-        />
-        <PlaceList 
-          places={this.props.places}
-          onItemSelected={this.placeSelectedHandler}
-        />
+        <View style={styles.inputContainer}>
+          <TextInput 
+            placeholder="An awesome places"
+            value={this.state.palceName}
+            onChangeText={this.placeNameChangedHandler}
+            style={styles.placeInput}
+          />
+          <Button 
+            style={styles.placeButton}
+            title="Add"
+          />
+        </View>
       </View>
     )
   }
@@ -47,35 +34,25 @@ class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     padding: 26
-  }, 
+  },
+  inputContainer: {
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%'
+  },
+  placeInput: {
+    width: '70%',
+    borderBottomWidth: 1
+  },
+  placeButton: {  
+    width: '30%'
+  }
 });
 
-const mapStateToProps = (state) => {
-  return {
-    places: state.places.places,
-    selectedPlace: state.places.selectedPlace
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onAddPlace: (name) => {
-      return dispatch(addPlace(name))
-    },
-    onDeletePlace: () => {
-      return dispatch(deletePlace())
-    },
-    onSelectPlace: (key) => {
-      return dispatch(selectPlace(key))
-    },
-    onDeselectPlace: () => {
-      return dispatch(deselectPlace())
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
